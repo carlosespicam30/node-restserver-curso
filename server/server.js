@@ -13,10 +13,14 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json());
 
-app.use(require('./routes/usuario'));
+//configuracion de routes
+app.use(require('./routes/index'));
 
 
-
+/* esto se tiene q poner si da problemas con heroku en el package.json
+"engines":{
+"node": "13.5.0"
+}*/
 //mongodb+srv://carlosespicam:Carbia20130701@cluster0-br4tg.mongodb.net/cafe
 mongoose.connect(process.env.URLDB, { useNewUrlParser: true, useCreateIndex: true },
     (err, res) => {
