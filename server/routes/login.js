@@ -70,7 +70,7 @@ async function verify(token) {
         email: payload.email,
         img: payload.picture,
         google: true
-    }
+    };
 }
 
 app.post('/google', async(req, res) => {
@@ -80,17 +80,29 @@ app.post('/google', async(req, res) => {
         .catch(e => {
             return res.status(403).json({
                 ok: false,
-                err: e
+                err: e.message
             });
         });
+    console.log("paso await verify");
+    /*
+        catch(error => {
+            return {
+                ok: false,
+                error: error
+            }
+        });
+ 
+    */
+    if (googleUser.email) {
 
-    Usuario.findOne({ email: googleUser.email }, (err, usuarioDB) => {
+
+        Usuario.findOne({ email: googleUser.email }, (err, usuarioDB) => {
             if (err) {
                 return res.status(500).json({
                     ok: false,
                     err
                 });
-            }
+            };
 
             if (usuarioDB) {
                 if (usuarioDB.google === false) {
@@ -139,11 +151,13 @@ app.post('/google', async(req, res) => {
                     });
                 });
             }
-        })
-        /*  res.json({
-             usuario: googleUser
+        });
+    }
 
-         }) */
+    /*  res.json({
+         usuario: googleUser
+
+     }) */
 });
 
 module.exports = app;
