@@ -23,10 +23,6 @@ let usuarioSchema = new Schema({
         type: String,
         required: [true, 'El password es obligatorio']
     },
-    img: {
-        type: String,
-        required: false
-    },
     role: {
         type: String,
         default: 'USER_ROLE',
@@ -39,6 +35,10 @@ let usuarioSchema = new Schema({
     google: {
         type: Boolean,
         default: false
+    },
+    img: {
+        type: String,
+        required: false
     }
 });
 
@@ -50,6 +50,7 @@ usuarioSchema.methods.toJSON = function() {
     return userObject;
 }
 
-usuarioSchema.plugin(uniqueValidator, { message: '{PATH} debe ser único' });
+//usuarioSchema.plugin(uniqueValidator, { message: '{PATH} debe ser único' });
+// uniqueValidator.defaults.message = 'Error, expected {PATH} to be unique.'
 
 module.exports = mongoose.model('Usuario', usuarioSchema);

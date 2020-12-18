@@ -9,7 +9,10 @@ const fs = require('fs');
 
 const path = require('path');
 // default options
-app.use(fileUpload());
+app.use(fileUpload({
+    useTempFiles: true,
+    createParentPath: true
+}));
 
 app.put('/upload/:tipo/:id', function(req, res) {
 
@@ -56,8 +59,8 @@ app.put('/upload/:tipo/:id', function(req, res) {
         })
     }
 
-    let nombreArchivo = `${ id}-${ new Date().getMilliseconds() }.${ extension}`;
 
+    let nombreArchivo = `${ id}-${ new Date().getMilliseconds() }.${ extension}`;
 
     archivo.mv(`uploads/${tipo}/${ nombreArchivo}`, (err) => {
         if (err)
@@ -65,8 +68,7 @@ app.put('/upload/:tipo/:id', function(req, res) {
                 ok: false,
                 err
             });
-
-        if (tipo == 'usuario') {
+        if (tipo === 'usuarios') {
             imagenUsuario(id, res, nombreArchivo);
         } else {
             imagenProducto(id, res, nombreArchivo);
@@ -79,6 +81,7 @@ app.put('/upload/:tipo/:id', function(req, res) {
 });
 
 function imagenUsuario(id, res, nombreArchivo) {
+
     Usuario.findById(id, (err, usuarioDB) => {
         if (err) {
             borraArchivo(usuarioDB.img, 'usuarios');
@@ -87,6 +90,7 @@ function imagenUsuario(id, res, nombreArchivo) {
                 err
             });
         }
+
         if (!usuarioDB) {
             borraArchivo(usuarioDB.img, 'usuarios');
             return res.status(400).json({
