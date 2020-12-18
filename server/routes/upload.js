@@ -62,7 +62,16 @@ app.put('/upload/:tipo/:id', function(req, res) {
 
     let nombreArchivo = `${ id}-${ new Date().getMilliseconds() }.${ extension}`;
 
-    archivo.mv(`uploads/${tipo}/${ nombreArchivo}`, (err) => {
+    let pathGuardar = `uploads/${tipo}/${ nombreArchivo}`;
+
+    if (!fs.existsSync(path.resolve(`uploads`))) {
+        crearDirectorio();
+    }
+    if (!fs.existsSync(path.resolve(`uploads/${ tipo }`))) {
+        crearDirectorio(tipo);
+    }
+
+    archivo.mv(pathGuardar, (err) => {
         if (err)
             return res.status(500).json({
                 ok: false,
@@ -153,6 +162,44 @@ function borraArchivo(nombreImagen, tipo) {
     if (fs.existsSync(pathImagen)) {
         fs.unlinkSync(pathImagen);
     }
-}
+};
+
+function crearDirectorio(tipo) {
+
+    switch (tipo) {
+        case 'usuarios':
+            fs.mkdir(`uploads/${ tipo }`, err => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Directory Created');
+                }
+            });
+            break;
+
+        case 'productos':
+            fs.mkdir(`uploads/${ tipo }`, err => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Directory Created');
+                }
+            });
+            break;
+
+        default:
+
+            fs.mkdir('uploads', err => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Directory Created');
+                }
+            });
+
+            break;
+    }
+
+};
 
 module.exports = app;
